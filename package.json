@@ -1,0 +1,27 @@
+{
+  "name": "serversidecw",
+  "version": "1.0.0",
+  "description": "Node js based courswork",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GayanthaSandeep16/serversideCW.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GayanthaSandeep16/serversideCW/issues"
+  },
+  "homepage": "https://github.com/GayanthaSandeep16/serversideCW#readme",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "bcrypt": "^5.1.1",
+    "crypto": "^1.0.1",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "sqlite3": "^5.1.7"
+  }
+}
