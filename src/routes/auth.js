@@ -41,15 +41,36 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
 //generate API key
-router.post('/api-key', authMiddleware, async (req, res) => {
-    try {
-      const apiKeyValue = generateApiKey();
-      const apiKey = await ApiKey.create({ userId: req.session.userId, apiKey: apiKeyValue });
-      await apiKey.createApiKeyUsage(); 
-      res.json({ message: 'API key generated', apiKey: apiKeyValue });
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to generate API key', details: error.message });
-    }
-  });
+router.post("/api-key", authMiddleware, async (req, res) => {
+  try {
+    const apiKeyValue = generateApiKey();
+    const apiKey = await ApiKey.create({
+      userId: req.session.userId,
+      apiKey: apiKeyValue,
+    });
+    await apiKey.createApiKeyUsage();
+    res.json({ message: "API key generated", apiKey: apiKeyValue });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Failed to generate API key", details: error.message });
+  }
+});
+
+//view API keys
+router.get("/api-key", authMiddleware, async (req, res) => {
+  try {
+    const apiKeys = await ApiKey.findAll({
+      where: { userId: req.session.userId },
+    });
+    res.json(apiKeys);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Failed to retrieve API keys", details: error.message });
+  }
+});
+
+
+module.exports = router;
