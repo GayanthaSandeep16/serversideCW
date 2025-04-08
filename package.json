@@ -2,7 +2,7 @@
   "name": "serversidecw",
   "version": "1.0.0",
   "description": "Node js based courswork",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"

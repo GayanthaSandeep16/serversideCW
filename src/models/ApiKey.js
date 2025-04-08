@@ -5,37 +5,19 @@ const User = require("./User");
 const ApiKey = sequelize.define(
   "ApiKey",
   {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    ApiKey: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-    },
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     userId: {
       type: DataTypes.INTEGER,
-      references: {
-        model: User,
-        key: "id",
-      },
+      allowNull: false,
+      references: { model: User, key: "id" },
     },
+    apiKey: { type: DataTypes.STRING, unique: true, allowNull: false },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 //relationships between models
-User.hasMany(ApiKey, {
-  foreignKey: "userId",
-});
-ApiKey.belongsTo(User, {
-  foreignKey: "userId",
-});
-
+User.hasMany(ApiKey, { foreignKey: "userId" });
+ApiKey.belongsTo(User, { foreignKey: "userId" });
 
 module.exports = ApiKey;
-

@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const ApiKey = require("../models/ApiKey");
 const { generateApiKey } = require("../utils/apiKeyGenerator");
-const authMiddleware = require("../middleware/authMiddleware");
+const authMiddleware = require("../middleware/authMiddleware.js");
 const User = require("../models/User");
 
 //register new user
@@ -47,7 +47,7 @@ router.post("/api-key", authMiddleware, async (req, res) => {
     const apiKeyValue = generateApiKey();
     const apiKey = await ApiKey.create({
       userId: req.session.userId,
-      apiKey: apiKeyValue,
+      apiKey: apiKeyValue, // This should be the field name matching the model
     });
     await apiKey.createApiKeyUsage();
     res.json({ message: "API key generated", apiKey: apiKeyValue });
