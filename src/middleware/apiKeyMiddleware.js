@@ -6,11 +6,11 @@ const apiKeyMiddleware = async (req, res, next) => {
     return res.status(401).json({ error: 'API key required in Authorization header' });
   }
   try {
-    const key = await ApiKey.findOne({ where: { apiKey } });
+    const key = await ApiKey.findOne({ where: { apiKey, isActive: true } });
     if (!key) {
-      return res.status(401).json({ error: 'Invalid API key' });
+      return res.status(401).json({ error: 'Invalid or inactive API key' });
     }
-    req.apiKeyId = key.id;
+    req.apiKey = key; 
     next();
   } catch (error) {
     res.status(500).json({ error: 'API key validation failed', details: error.message });
