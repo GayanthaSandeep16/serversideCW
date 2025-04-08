@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const apiKeyMiddleware = require("../middlewares/apiKeyMiddleware");
+const apiKeyMiddleware = require("../middleware/apiKeyMiddleware");
 const { getCountryData } = require("../services/countryService");
 const ApiKeyUsage = require("../models/ApiKeyUsage");
 
