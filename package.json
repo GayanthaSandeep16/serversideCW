@@ -4,6 +4,7 @@
   "description": "Node js based courswork",
   "main": "index.js",
   "scripts": {
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,8 +21,11 @@
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "crypto": "^1.0.1",
+    "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
+    "nodemon": "^3.1.9",
+    "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7"
   }
 }
