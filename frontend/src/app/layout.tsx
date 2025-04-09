@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "../components/Navbar"; // Import the Navbar component
+import Navbar from "../components/Navbar"; 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,6 +12,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
 
 
 export default function RootLayout({
@@ -37,7 +38,7 @@ export default function RootLayout({
           <div className="container mx-auto px-4 text-center">
             <p>
               &copy; Country API System. Created by Gayantha Sandeep for
-              server Coursework 1.
+              Server Coursework 1.
             </p>
             <p className="mt-2">
               <a
