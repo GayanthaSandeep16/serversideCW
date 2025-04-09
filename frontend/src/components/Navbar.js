@@ -10,18 +10,39 @@ export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  useEffect(() => {
+  // Function to check authentication state
+  const checkAuthState = () => {
     const userId = localStorage.getItem("userId");
     const role = localStorage.getItem("role");
     setIsAuthenticated(!!userId);
     setIsAdmin(role === "admin");
-  }, []);
+  };
+
+  useEffect(() => {
+    // Initial check on mount
+    checkAuthState();
+
+    // Listen for route changes to re-check auth state
+    const handleRouteChange = () => {
+      checkAuthState();
+    };
+
+    // Subscribe to route change events
+    router.events.on("routeChangeComplete", handleRouteChange);
+
+    // Clean up the event listener on unmount
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]); // Depend on router.events to ensure the listener is set up correctly
 
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:3000/auth/logout", {}, { withCredentials: true });
       localStorage.removeItem("userId");
       localStorage.removeItem("role");
+      setIsAuthenticated(false); // Update state immediately
+      setIsAdmin(false); // Update state immediately
       router.push("/login");
     } catch (err) {
       console.error("Logout failed:", err);
@@ -29,27 +50,20 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-gray-800 p-4 text-white">
+    <nav className="navbar">
       <div className="container mx-auto flex justify-between items-center">
         <div className="space-x-4">
-          <Link href="/" className="hover:text-gray-300">Home</Link>
+          <Link href="/">Home</Link>
           {!isAuthenticated ? (
             <>
-              <Link href="/login" className="hover:text-gray-300">Login</Link>
-              <Link href="/register" className="hover:text-gray-300">Register</Link>
+              <Link href="/login">Login</Link>
+              <Link href="/register">Register</Link>
             </>
           ) : (
             <>
-              <Link href="/dashboard" className="hover:text-gray-300">User Dashboard</Link>
-              {isAdmin && (
-                <Link href="/admin/dashboard" className="hover:text-gray-300">Admin Dashboard</Link>
-              )}
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
-              >
-                Logout
-              </button>
+              <Link href="/dashboard">User Dashboard</Link>
+              {isAdmin && <Link href="/admin/dashboard">Admin Dashboard</Link>}
+              <button onClick={handleLogout}>Logout</button>
             </>
           )}
         </div>

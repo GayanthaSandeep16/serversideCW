@@ -8,7 +8,7 @@ export default function Dashboard() {
   const [apiKeys, setApiKeys] = useState([]);
   const [countryName, setCountryName] = useState("");
   const [countryData, setCountryData] = useState(null);
-  const [selectedApiKey, setSelectedApiKey] = useState(""); 
+  const [selectedApiKey, setSelectedApiKey] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -25,7 +25,9 @@ export default function Dashboard() {
       const response = await axios.get("http://localhost:3000/auth/my-api-keys", {
         withCredentials: true,
       });
-      setApiKeys(response.data);
+      // Filter to only include active keys for display
+      const activeKeys = response.data.filter((key) => key.isActive);
+      setApiKeys(activeKeys);
     } catch (err) {
       setError("Failed to fetch API keys: " + (err.response?.data?.error || err.message));
     }
@@ -47,7 +49,7 @@ export default function Dashboard() {
       await axios.post(`http://localhost:3000/auth/revoke-key/${id}`, {}, {
         withCredentials: true,
       });
-      fetchApiKeys();
+      fetchApiKeys(); // This will re-fetch and filter out revoked keys
     } catch (err) {
       setError("Failed to revoke API key: " + (err.response?.data?.error || err.message));
     }
@@ -111,12 +113,7 @@ export default function Dashboard() {
                       </span>
                     </div>
                     <div>
-                      <button
-                        onClick={() => navigator.clipboard.writeText(key.apiKey)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-lg mr-2"
-                      >
-                        Copy
-                      </button>
+                      {/* Removed the Copy button */}
                       {key.isActive && (
                         <button
                           onClick={() => revokeApiKey(key.id)}

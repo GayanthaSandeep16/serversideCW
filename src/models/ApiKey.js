@@ -17,8 +17,6 @@ const ApiKey = sequelize.define(
   { timestamps: true }
 );
 
-// Relationships between models
-User.hasMany(ApiKey, { foreignKey: 'userId' });
-ApiKey.belongsTo(User, { foreignKey: 'userId' });
+
 
 module.exports = ApiKey;

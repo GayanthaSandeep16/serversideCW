@@ -10,10 +10,9 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
-
 app.use(
   cors({
-    origin: 'http://localhost:3001', // change this to your frontend URL
+    origin: 'http://localhost:3001',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
@@ -29,20 +28,30 @@ app.use(
   })
 );
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
 app.use('/auth', authRoutes);
 app.use('/api', countryRoutes);
 app.use('/admin', adminRoutes);
-
 app.get('/', (req, res) => {
   res.send('Welcome to server cw XD');
 });
 
-sequelize
-  .sync({ alter: true }) // This updates the schema to match the model
-  .then(() => {
+async function startServer() {
+  try {
+    // Disable foreign key checks
+    await sequelize.query('PRAGMA foreign_keys = OFF;');
+
+    // Sync the database
+    await sequelize.sync({ alter: true });
+    console.log('Database synced successfully');
+
+    // Re-enable foreign key checks
+    await sequelize.query('PRAGMA foreign_keys = ON;');
+
+    // Start the server
     app.listen(port, () => console.log(`Server running on port ${port}`));
-  })
-  .catch((err) => console.error('Database sync failed:', err));
+  } catch (err) {
+    console.error('Database sync failed:', err);
+  }
+}
+
+startServer();

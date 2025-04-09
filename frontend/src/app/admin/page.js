@@ -33,7 +33,7 @@ export default function AdminDashboard() {
 
   const revokeApiKey = async (id) => {
     try {
-      await axios.post(`http://localhost:3000/admin/revoke-key/${id}`, {}, {
+      await axios.post(`http://localhost:3000/auth/revoke-key/${id}`, {}, {
         withCredentials: true,
       });
       fetchApiKeys(); // Refresh the list after revoking

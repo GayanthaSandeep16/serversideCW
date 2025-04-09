@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const ApiKey = require("../models/ApiKey");
+const { ApiKey, ApiKeyUsage, User } = require('../models');
 const { generateApiKey } = require("../utils/apiKeyGenerator");
 const {authMiddleware, authMiddlewareAdmin } = require("../middleware/authMiddleware");
-const User = require("../models/User");
 
 //register new user
 router.post("/register", async (req, res) => {
@@ -45,26 +44,29 @@ router.post("/login", async (req, res) => {
 // View user's own API keys 
 router.get('/my-api-keys', authMiddleware, async (req, res) => {
   try {
+    console.log('User ID from session:', req.session.userId);
     const apiKeys = await ApiKey.findAll({
       where: { userId: req.session.userId },
       include: [{ model: ApiKeyUsage }],
     });
+    console.log('Retrieved API keys:', apiKeys);
     res.json(apiKeys);
   } catch (error) {
     res.status(500).json({ error: 'Error retrieving your API keys', details: error.message });
   }
 });
-
 // Generate new API key 
 router.post('/generate-key', authMiddleware, async (req, res) => {
   try {
     const apiKeyValue = generateApiKey();
+    console.log('Generating key for userId:', req.session.userId);
     const apiKey = await ApiKey.create({
       userId: req.session.userId,
       apiKey: apiKeyValue,
       isActive: true,
     });
     await apiKey.createApiKeyUsage();
+    console.log('Created API key:', apiKey.toJSON());
     res.json({ message: 'API key generated', apiKey: apiKeyValue });
   } catch (error) {
     res.status(500).json({ error: 'Error generating API key', details: error.message });
