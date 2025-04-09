@@ -36,7 +36,7 @@ export default function AdminDashboard() {
       await axios.post(`http://localhost:3000/auth/revoke-key/${id}`, {}, {
         withCredentials: true,
       });
-      fetchApiKeys(); // Refresh the list after revoking
+      fetchApiKeys(); 
     } catch (err) {
       setError(
         err.response?.data?.error || 'Failed to revoke API key.'

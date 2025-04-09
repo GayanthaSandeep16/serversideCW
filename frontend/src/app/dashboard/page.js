@@ -25,7 +25,7 @@ export default function Dashboard() {
       const response = await axios.get("http://localhost:3000/auth/my-api-keys", {
         withCredentials: true,
       });
-      // Filter to only include active keys for display
+      // remove innactive keys from the list(but can see in admin dashboard)
       const activeKeys = response.data.filter((key) => key.isActive);
       setApiKeys(activeKeys);
     } catch (err) {
