@@ -1,5 +1,4 @@
-// This middleware checks if the user is authenticate
-// and user ID. If the user is not authenticate  it sends a 401 Unauthorized response.
+const User = require('../models/User');
 
 
 const authMiddleware = (req, res, next) => {
@@ -9,4 +8,20 @@ const authMiddleware = (req, res, next) => {
   next();
 };
 
-module.exports = authMiddleware;
+
+const authMiddlewareAdmin = async (req, res, next) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: 'Unauthorized - Please log in' });
+  }
+  try {
+    const user = await User.findByPk(req.session.userId);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden - Admin access required' });
+    }
+    next();
+  } catch (error) {
+    res.status(500).json({ error: 'Server error', details: error.message });
+  }
+};
+
+module.exports = { authMiddleware, authMiddlewareAdmin };

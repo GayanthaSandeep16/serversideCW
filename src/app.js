@@ -5,9 +5,19 @@ const authRoutes = require('./routes/auth');
 const countryRoutes = require('./routes/country');
 const adminRoutes = require('./routes/admin');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+
+app.use(
+  cors({
+    origin: 'http://localhost:3001', // change this to your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(
