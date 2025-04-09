@@ -1,20 +1,20 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const [apiKeys, setApiKeys] = useState([]);
-  const [countryName, setCountryName] = useState('');
+  const [countryName, setCountryName] = useState("");
   const [countryData, setCountryData] = useState(null);
-  const [error, setError] = useState('');
+  const [selectedApiKey, setSelectedApiKey] = useState(""); 
+  const [error, setError] = useState("");
   const router = useRouter();
 
   useEffect(() => {
-    if (!localStorage.getItem('userId')) {
-      router.push('/login');
+    if (!localStorage.getItem("userId")) {
+      router.push("/login");
       return;
     }
     fetchApiKeys();
@@ -22,89 +22,110 @@ export default function Dashboard() {
 
   const fetchApiKeys = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/auth/api-key', {
-        withCredentials: true, // Include cookies in the request
+      const response = await axios.get("http://localhost:3000/auth/my-api-keys", {
+        withCredentials: true,
       });
       setApiKeys(response.data);
     } catch (err) {
-      setError('Failed to fetch API keys: ' + (err.response?.data?.error || err.message));
+      setError("Failed to fetch API keys: " + (err.response?.data?.error || err.message));
     }
   };
 
   const generateApiKey = async () => {
     try {
-      await axios.post('http://localhost:3000/auth/api-key', {}, {
-        withCredentials: true, // Include cookies in the request
+      await axios.post("http://localhost:3000/auth/generate-key", {}, {
+        withCredentials: true,
       });
       fetchApiKeys();
     } catch (err) {
-      setError('Failed to generate API key: ' + (err.response?.data?.error || err.message));
+      setError("Failed to generate API key: " + (err.response?.data?.error || err.message));
+    }
+  };
+
+  const revokeApiKey = async (id) => {
+    try {
+      await axios.post(`http://localhost:3000/auth/revoke-key/${id}`, {}, {
+        withCredentials: true,
+      });
+      fetchApiKeys();
+    } catch (err) {
+      setError("Failed to revoke API key: " + (err.response?.data?.error || err.message));
     }
   };
 
   const fetchCountryData = async (e) => {
     e.preventDefault();
-    if (!apiKeys.length) {
-      setError('Generate an API key first.');
+    if (!selectedApiKey) {
+      setError("Please select an API key.");
       return;
     }
     try {
       const response = await axios.get(`http://localhost:3000/api/country/${countryName}`, {
-        headers: { Authorization: apiKeys[0].apiKey },
+        headers: { Authorization: selectedApiKey },
       });
       setCountryData(response.data);
-      setError('');
+      setError("");
     } catch (err) {
-      setError('Failed to fetch country data: ' + (err.response?.data?.error || err.message));
+      setError("Failed to fetch country data: " + (err.response?.data?.error || err.message));
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('userId');
-    router.push('/login');
+    localStorage.removeItem("userId");
+    localStorage.removeItem("role");
+    router.push("/login");
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-100 to-purple-100 p-8">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-800">User Dashboard</h2>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
-          >
-            Logout
-          </button>
-        </div>
-        {error && (
-          <p className="text-red-500 bg-red-50 p-3 rounded-lg mb-6 text-center">{error}</p>
-        )}
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">User Dashboard</h2>
+        {error && <p className="text-red-500 bg-red-50 p-3 rounded-lg mb-6 text-center">{error}</p>}
 
-        {/* API Key Section */}
-        <div className="mb-8">
+        {/* API Key Management Section */}
+        <div className="mb-8 p-6 bg-gray-50 rounded-lg shadow-md">
+          <h3 className="text-xl font-semibold text-gray-700 mb-4">API Key Management</h3>
           <button
             onClick={generateApiKey}
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg mb-4 transition duration-300"
           >
-            Generate API Key
+            Generate New API Key
           </button>
           {apiKeys.length > 0 ? (
             <div className="mt-4">
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">Your API Keys:</h3>
+              <h4 className="text-lg font-semibold text-gray-600 mb-2">Your API Keys:</h4>
               <ul className="space-y-2">
                 {apiKeys.map((key) => (
                   <li
                     key={key.id}
-                    className="bg-gray-50 p-3 rounded-lg shadow-sm flex justify-between items-center"
+                    className="bg-white p-3 rounded-lg shadow-sm flex justify-between items-center"
                   >
-                    <span className="text-gray-600 font-mono">{key.apiKey}</span>
-                    <span
-                      className={`text-sm font-semibold ${
-                        key.isActive ? 'text-green-500' : 'text-red-500'
-                      }`}
-                    >
-                      {key.isActive ? 'Active' : 'Revoked'}
-                    </span>
+                    <div>
+                      <span className="text-gray-600 font-mono">{key.apiKey}</span>
+                      <span
+                        className={`ml-2 text-sm font-semibold ${
+                          key.isActive ? "text-green-500" : "text-red-500"
+                        }`}
+                      >
+                        {key.isActive ? "Active" : "Revoked"}
+                      </span>
+                    </div>
+                    <div>
+                      <button
+                        onClick={() => navigator.clipboard.writeText(key.apiKey)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-lg mr-2"
+                      >
+                        Copy
+                      </button>
+                      {key.isActive && (
+                        <button
+                          onClick={() => revokeApiKey(key.id)}
+                          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-1 px-3 rounded-lg"
+                        >
+                          Revoke
+                        </button>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -116,6 +137,22 @@ export default function Dashboard() {
 
         {/* Country Data Fetch Section */}
         <form onSubmit={fetchCountryData} className="mb-8 flex items-center space-x-3">
+          <select
+            value={selectedApiKey}
+            onChange={(e) => setSelectedApiKey(e.target.value)}
+            className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select an API Key</option>
+            {apiKeys
+              .filter((key) => key.isActive)
+              .map((key) => (
+                <option key={key.id} value={key.apiKey}>
+                  {key.apiKey.substring(0, 8)}... (Last Used: {key.ApiKeyUsage?.lastUsed
+                    ? new Date(key.ApiKeyUsage.lastUsed).toLocaleString()
+                    : "Never"})
+                </option>
+              ))}
+          </select>
           <input
             type="text"
             placeholder="Enter country name (e.g., France)"
@@ -126,6 +163,7 @@ export default function Dashboard() {
           <button
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300"
+            disabled={!selectedApiKey}
           >
             Fetch Country Data
           </button>
@@ -143,7 +181,7 @@ export default function Dashboard() {
                 <strong>Capital:</strong> {countryData.capital}
               </p>
               <p className="text-gray-700">
-                <strong>Languages:</strong> {countryData.languages.join(', ')}
+                <strong>Languages:</strong> {countryData.languages.join(", ")}
               </p>
             </div>
             <img
@@ -153,6 +191,13 @@ export default function Dashboard() {
             />
           </div>
         )}
+
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg mt-6"
+        >
+          Logout
+        </button>
       </div>
     </div>
   );

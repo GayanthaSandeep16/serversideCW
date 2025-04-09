@@ -35,41 +35,61 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
     req.session.userId = user.id;
-    res.json({ message: "Logged in", userId: user.id });
+    res.json({ message: "Logged in", userId: user.id, role: user.role || "user" });
   } catch (error) {
     res.status(500).json({ error: "Login failed", details: error.message });
   }
 });
 
-//generate API key
-router.post("/api-key", authMiddleware, async (req, res) => {
+
+// View user's own API keys 
+router.get('/my-api-keys', authMiddleware, async (req, res) => {
+  try {
+    const apiKeys = await ApiKey.findAll({
+      where: { userId: req.session.userId },
+      include: [{ model: ApiKeyUsage }],
+    });
+    res.json(apiKeys);
+  } catch (error) {
+    res.status(500).json({ error: 'Error retrieving your API keys', details: error.message });
+  }
+});
+
+// Generate new API key 
+router.post('/generate-key', authMiddleware, async (req, res) => {
   try {
     const apiKeyValue = generateApiKey();
     const apiKey = await ApiKey.create({
       userId: req.session.userId,
-      apiKey: apiKeyValue, 
+      apiKey: apiKeyValue,
+      isActive: true,
     });
     await apiKey.createApiKeyUsage();
-    res.json({ message: "API key generated", apiKey: apiKeyValue });
+    res.json({ message: 'API key generated', apiKey: apiKeyValue });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Failed to generate API key", details: error.message });
+    res.status(500).json({ error: 'Error generating API key', details: error.message });
   }
 });
 
-//view API keys
-router.get("/api-key", authMiddleware, async (req, res) => {
+//revoke API key 
+router.post('/revoke-key/:id', authMiddleware, async (req, res) => {
   try {
-    const apiKeys = await ApiKey.findAll({
-      where: { userId: req.session.userId },
-    });
-    res.json(apiKeys);
+    const keyId = req.params.id;
+    await ApiKey.update({ isActive: false }, { where: { id: keyId } });
+    res.json({ message: 'API key revoked' });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Failed to retrieve API keys", details: error.message });
+    res.status(500).json({ error: 'Error revoking API key', details: error.message });
   }
+});
+
+//logout user
+router.get('/logout', authMiddleware, (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to log out', details: err.message });
+    }
+    res.json({ message: 'Logged out successfully' });
+  });
 });
 
 

@@ -15,9 +15,10 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3000/auth/login', { email, password }, {
-        withCredentials: true, // Include cookies in the request
+        withCredentials: true,
       });
       localStorage.setItem('userId', response.data.userId);
+      localStorage.setItem('role', response.data.role); 
       router.push('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed. Check your credentials.');
