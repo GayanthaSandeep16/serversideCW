@@ -1,6 +1,6 @@
 const User = require('../models/User');
 
-
+// Middleware to check if user is authenticated
 const authMiddleware = (req, res, next) => {
   if (!req.session.userId) {
     return res.status(401).json({ error: 'Unauthorized - Please log in' });
@@ -8,7 +8,7 @@ const authMiddleware = (req, res, next) => {
   next();
 };
 
-
+// Middleware to check if user is authenticated and is an admin
 const authMiddlewareAdmin = async (req, res, next) => {
   if (!req.session.userId) {
     return res.status(401).json({ error: 'Unauthorized - Please log in' });

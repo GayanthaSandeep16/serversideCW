@@ -1,5 +1,6 @@
 const ApiKey = require('../models/ApiKey');
 
+// Middleware to validate API key from request headers
 const apiKeyMiddleware = async (req, res, next) => {
   const apiKey = req.headers['authorization'];
   if (!apiKey) {

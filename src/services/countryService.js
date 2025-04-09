@@ -1,6 +1,7 @@
 const axios = require('axios');
 const https = require('https');
 
+// This function fetches country data from the REST Countries API
 const getCountryData = async (countryName) => {
   console.log(`Fetching data for: ${countryName}`);
   try {

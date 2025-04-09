@@ -37,17 +37,17 @@ app.get('/', (req, res) => {
 
 async function startServer() {
   try {
-    // Disable foreign key checks
+   
     await sequelize.query('PRAGMA foreign_keys = OFF;');
 
-    // Sync the database
+    
     await sequelize.sync({ alter: true });
     console.log('Database synced successfully');
 
-    // Re-enable foreign key checks
+   
     await sequelize.query('PRAGMA foreign_keys = ON;');
 
-    // Start the server
+   
     app.listen(port, () => console.log(`Server running on port ${port}`));
   } catch (err) {
     console.error('Database sync failed:', err);

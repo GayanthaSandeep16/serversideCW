@@ -2,7 +2,7 @@ const {DataTypes} = require("sequelize");
 const sequelize = require("../config/database");
 const ApiKey = require("./ApiKey");
 
-
+// Define the ApiKeyUsage model
 const ApiKeyUsage = sequelize.define('ApiKeyUsage', {
     id: {
       type: DataTypes.INTEGER,

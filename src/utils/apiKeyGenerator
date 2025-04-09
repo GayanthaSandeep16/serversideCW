@@ -1,5 +1,8 @@
 const crypto = require('crypto');
 
+/**
+ * Generates a random API key using crypto module.
+ */
 const generateApiKey = () => crypto.randomBytes(16).toString('hex');
 
 module.exports = { generateApiKey };

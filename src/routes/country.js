@@ -5,6 +5,7 @@ const apiKeyMiddleware = require('../middleware/apiKeyMiddleware');
 const { getCountryData } = require('../services/countryService');
 const ApiKeyUsage = require('../models/ApiKeyUsage');
 
+//api to get country data by name
 router.get('/country/:name', apiKeyMiddleware, async (req, res) => {
   const { name } = req.params;
   if (!name) {
