@@ -22,7 +22,7 @@ export default function Dashboard() {
 
   const fetchApiKeys = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/auth/my-api-keys", {
+      const response = await axios.get("http://backend:3000/auth/my-api-keys", {
         withCredentials: true,
       });
       // remove innactive keys from the list(but can see in admin dashboard)
@@ -35,7 +35,7 @@ export default function Dashboard() {
 
   const generateApiKey = async () => {
     try {
-      await axios.post("http://localhost:3000/auth/generate-key", {}, {
+      await axios.post("http://backend:3000/auth/generate-key", {}, {
         withCredentials: true,
       });
       fetchApiKeys();
@@ -46,7 +46,7 @@ export default function Dashboard() {
 
   const revokeApiKey = async (id) => {
     try {
-      await axios.post(`http://localhost:3000/auth/revoke-key/${id}`, {}, {
+      await axios.post(`http://backend:3000/auth/revoke-key/${id}`, {}, {
         withCredentials: true,
       });
       fetchApiKeys(); // This will re-fetch and filter out revoked keys
@@ -62,7 +62,7 @@ export default function Dashboard() {
       return;
     }
     try {
-      const response = await axios.get(`http://localhost:3000/api/country/${countryName}`, {
+      const response = await axios.get(`http://backend:3000/api/country/${countryName}`, {
         headers: { Authorization: selectedApiKey },
       });
       setCountryData(response.data);

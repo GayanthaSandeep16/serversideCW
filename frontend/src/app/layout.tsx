@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "../components/Navbar"; 
+import Navbar from "../components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,7 +12,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
+export const metadata = {
+  title: "Country API System",
+  description: "A secure API middleware service ",
+};
 
 export default function RootLayout({
   children,
@@ -25,7 +27,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        {/* Navbar at the top */}
         <Navbar />
 
         {/* Main content area, takes up remaining space */}
@@ -37,8 +38,8 @@ export default function RootLayout({
         <footer className="bg-gray-800 text-white py-4">
           <div className="container mx-auto px-4 text-center">
             <p>
-              &copy; Country API System. Created by Gayantha Sandeep for
-              Server Coursework 1.
+              © {new Date().getFullYear()} Country API System. Created by Gayantha Sandeep for
+              Advance Server Side Coursework 1.
             </p>
             <p className="mt-2">
               <a

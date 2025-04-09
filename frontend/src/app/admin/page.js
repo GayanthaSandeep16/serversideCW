@@ -20,7 +20,7 @@ export default function AdminDashboard() {
 
   const fetchApiKeys = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/admin/api-keys', {
+      const response = await axios.get('http://backend:3000/admin/api-keys', {
         withCredentials: true,
       });
       setApiKeys(response.data);
@@ -33,7 +33,7 @@ export default function AdminDashboard() {
 
   const revokeApiKey = async (id) => {
     try {
-      await axios.post(`http://localhost:3000/auth/revoke-key/${id}`, {}, {
+      await axios.post(`http://backend:3000/auth/revoke-key/${id}`, {}, {
         withCredentials: true,
       });
       fetchApiKeys(); 
@@ -46,7 +46,7 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:3000/auth/logout', {}, { withCredentials: true });
+      await axios.post('http://backend:3000/auth/logout', {}, { withCredentials: true });
     } catch (err) {
       console.error('Logout failed:', err);
     }

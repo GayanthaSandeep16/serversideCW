@@ -14,7 +14,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/auth/login', { email, password }, {
+      const response = await axios.post('http://backend:3000/auth/login', { email, password }, {
         withCredentials: true,
       });
       localStorage.setItem('userId', response.data.userId);

@@ -1,23 +1,24 @@
 "use client";
 
-import { useState } from 'react';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Register() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/auth/register', { email, password });
-      router.push('/login');
-    } catch (err) {
-      setError('Registration failed. Please try again.');
+      await axios.post("http://backend:3000/auth/register", { email, password });
+      window.dispatchEvent(new Event("authChange"));
+      router.push("/login");
+    } catch {
+      setError("Registration failed. Please try again.");
     }
   };
 
@@ -43,7 +44,9 @@ export default function Register() {
             className="border p-2 mb-4 w-full rounded"
             required
           />
-          <button type="submit" className="bg-blue-500 text-white p-2 w-full rounded">Register</button>
+          <button type="submit" className="bg-blue-500 text-white p-2 w-full rounded">
+            Register
+          </button>
         </form>
         <Link href="/" className="text-blue-500 mt-4 block text-center">
           Back to Home

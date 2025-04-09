@@ -38,7 +38,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:3000/auth/logout", {}, { withCredentials: true });
+      await axios.post("http://backend:3000/auth/logout", {}, { withCredentials: true });
       localStorage.removeItem("userId");
       localStorage.removeItem("role");
       setIsAuthenticated(false); // Update state immediately
