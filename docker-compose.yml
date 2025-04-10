@@ -1,34 +1,16 @@
 services:
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    build: ./frontend
     ports:
-      - "3001:3001"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://backend:3000
-    depends_on:
-      - backend
+      - "4000:4000"
     volumes:
+      - ./frontend:/app
       - /app/node_modules
-    networks:
-      - app-network
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
     ports:
       - "3000:3000"
-    environment:
-      - PORT=3000
-      - DATABASE_URL=sqlite:/app/database.sqlite
-      - FRONTEND_URL=${FRONTEND_URL}
     volumes:
-      - ./database.sqlite:/app/database.sqlite
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
+      - ./backend:/app
+      - /app/node_modules
