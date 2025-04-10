@@ -12,7 +12,7 @@ router.post("/register", async (req, res) => {
     return res.status(400).json({ error: "Email and password are required" });
   }
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10); // hash password
     const user = await User.create({ email, password: hashedPassword });
     res.status(201).json({ message: "User registered", userId: user.id });
   } catch (error) {
