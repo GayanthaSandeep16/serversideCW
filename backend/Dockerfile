@@ -19,7 +19,8 @@ RUN mkdir -p /app/data && \
 
 # Environment variables
 ENV PORT=3000
-ENV DATABASE_URL=/app/data/database.sqlite
+ENV DB_PATH=/app/data/database.sqlite
+ENV SECRET_KEY=123456
 
 # Expose port
 EXPOSE 3000
