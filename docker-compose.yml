@@ -1,16 +1,30 @@
+version: '3.8'
+
 services:
   frontend:
     build: ./frontend
     ports:
       - "4000:4000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://backend:3000
+    depends_on:
+      - backend
+    networks:
+      - app-network
 
   backend:
     build: ./backend
     ports:
       - "3000:3000"
+    environment:
+      - PORT=3000
+      - DATABASE_URL=/app/data/database.sqlite
+      - FRONTEND_URL=http://frontend:4000
     volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - ./backend/data:/app/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
